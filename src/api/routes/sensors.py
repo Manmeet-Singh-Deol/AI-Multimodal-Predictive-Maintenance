@@ -157,6 +157,27 @@ async def get_latest_sensors() -> List[SensorData]:
             _SENSOR_STORE[machine_id] = history[-1000:]
         latest_points.append(new_point)
 
+        # Persist to relational database
+        try:
+            from src.database import SessionLocal, repository
+            with SessionLocal() as db:
+                repository.save_telemetry_point(
+                    db=db,
+                    machine_id=new_point.machine_id,
+                    temp=new_point.temperature,
+                    vib=new_point.vibration,
+                    press=new_point.pressure,
+                    rpm=new_point.rpm,
+                    current=new_point.current,
+                    noise=new_point.noise_db,
+                    is_anomaly=new_point.is_anomaly,
+                    anomaly_score=new_point.anomaly_score or 0.0,
+                    fault_label=new_point.fault_label or "Normal Operation",
+                    timestamp=new_point.timestamp,
+                )
+        except Exception as exc:
+            logger.debug(f"Telemetry database persist skipped: {exc}")
+
     return latest_points
 
 

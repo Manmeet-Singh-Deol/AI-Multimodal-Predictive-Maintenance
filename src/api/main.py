@@ -39,6 +39,14 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     settings.ensure_directories()
     logger.info(f"Verified data directories: {settings.data_raw_dir}, {settings.models_dir}")
 
+    # Initialize relational database
+    try:
+        from src.database import init_db
+        init_db()
+        logger.info("Relational database initialized.")
+    except Exception as exc:
+        logger.warning(f"Database initialization warning: {exc}")
+
     # Initialize sensor data stream
     sensors.initialize_sensor_store()
     logger.info("Sensor telemetry simulator store initialized.")

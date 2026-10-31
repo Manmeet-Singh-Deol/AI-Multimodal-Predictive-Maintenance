@@ -23,10 +23,12 @@ sentence-transformers>=2.2.0
 rank-bm25>=0.2.2
 google-generativeai>=0.8.0
 
-# Backend
+# Backend & Database
 fastapi>=0.104.0
 uvicorn[standard]>=0.24.0
 python-multipart>=0.0.6
+sqlalchemy>=2.0.0
+aiosqlite>=0.20.0
 
 # Frontend
 streamlit>=1.29.0

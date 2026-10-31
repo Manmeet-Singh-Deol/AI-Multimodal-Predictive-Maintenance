@@ -240,6 +240,29 @@ with tab3:
         },
     ]
 
+    # Load from persistent relational database if available
+    try:
+        from src.database import SessionLocal, repository
+        with SessionLocal() as db_session:
+            db_records = repository.get_maintenance_history(db_session)
+            if db_records:
+                maintenance_records = [
+                    {
+                        "Work Order": r.work_order_id,
+                        "Date": r.service_date,
+                        "Asset": r.machine_id,
+                        "Component": r.component,
+                        "Fault Detected": r.maintenance_type,
+                        "Action Taken": r.actions_taken,
+                        "Downtime (hrs)": r.downtime_hours,
+                        "Technician": r.technician,
+                        "Status": "Verified Closed",
+                    }
+                    for r in db_records
+                ]
+    except Exception:
+        pass
+
     df_maint = pd.DataFrame(maintenance_records)
     st.dataframe(df_maint, use_container_width=True, hide_index=True)
 

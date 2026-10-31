@@ -247,6 +247,29 @@ async def chat_message(request: ChatRequest) -> ChatResponse:
         "timestamp": datetime.now(timezone.utc).isoformat(),
     })
 
+    # Persist to relational database
+    try:
+        from src.database import SessionLocal, repository
+        with SessionLocal() as db:
+            repository.save_chat_turn(
+                db=db,
+                session_id=request.session_id,
+                role="user",
+                content=request.message,
+                machine_id=request.machine_id,
+            )
+            repository.save_chat_turn(
+                db=db,
+                session_id=request.session_id,
+                role="assistant",
+                content=response.response,
+                machine_id=request.machine_id,
+                sources=response.sources,
+                safety_warnings=response.safety_warnings,
+            )
+    except Exception as exc:
+        logger.debug(f"Chat database persist skipped: {exc}")
+
     return response
 
 
