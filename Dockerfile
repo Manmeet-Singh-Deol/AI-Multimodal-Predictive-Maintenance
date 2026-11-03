@@ -18,10 +18,14 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 
 # Create persistent storage directories
-RUN mkdir -p data/raw data/processed data/manuals data/chroma_db models
+RUN mkdir -p data/raw data/processed data/manuals data/chroma_db models && \
+    chmod -R 777 data models
+
+# Make launcher executable
+RUN chmod +x start.sh
 
 # Port 7860 is the default port for Hugging Face Spaces (or use $PORT)
 EXPOSE 7860
 
-# Launch Uvicorn server on port 7860
-CMD ["uvicorn", "src.api.main:app", "--host", "0.0.0.0", "--port", "7860"]
+# Launch both FastAPI backend (port 8000) and Streamlit frontend (port 7860)
+CMD ["./start.sh"]
