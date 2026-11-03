@@ -1,3 +1,13 @@
+---
+title: AI Multimodal Predictive Maintenance
+emoji: 🔧
+colorFrom: blue
+colorTo: indigo
+sdk: docker
+app_port: 7860
+pinned: false
+---
+
 # AI-Powered Multimodal Industrial Machine Troubleshooting & Predictive Maintenance Assistant
 
 An intelligent system that combines **predictive maintenance ML models** with a **multimodal AI troubleshooting chatbot** to help technicians diagnose and prevent industrial machine failures.
